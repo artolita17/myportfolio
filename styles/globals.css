@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #000000;
+  --panel: rgba(255,255,255,0.03);
+  --glow: #00f0ff;
+}
+
+html, body, #__next {
+  height: 100%;
+}
+
+/* prevent horizontal overflow which can shift centered elements */
+html, body, #__next { overflow-x: hidden; }
+
+body {
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(0,240,255,0.02), transparent),
+    radial-gradient(1000px 400px at 90% 90%, rgba(139,228,255,0.02), transparent),
+    var(--bg);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+.bg-panel { background: var(--panel); }
+.text-glow { color: var(--glow); }
+.border-glow { border-color: rgba(0,240,255,0.45); }
+
+/* custom cursor trail */
+body {
+  cursor: none;
+}
+.cursor-dot {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--glow);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 20px rgba(0,240,255,0.6);
+  z-index: 9999;
+}
+
+.cursor-ring {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,240,255,0.35);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 24px rgba(0,240,255,0.12);
+  z-index: 9998;
+  transition: width 160ms ease, height 160ms ease, opacity 160ms ease;
+}
+
+/* glassmorphism */
+.glass {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+  backdrop-filter: blur(8px);
+}
+
+/* Responsive and performance tweaks */
+@media (max-width: 768px) {
+  h1 { font-size: calc(26px + 6vw) }
+  .bg-panel { background: rgba(255,255,255,0.02) }
+  /* disable heavy 3D interaction on small screens */
+  canvas { display: none !important }
+}
+
+/* hide custom cursor on touch devices */
+@media (pointer: coarse) {
+  .cursor-dot, .cursor-ring { display: none }
+  body { cursor: auto }
+}
+
+/* card overlay and video preview smoothing */
+.card-video { transition: opacity 240ms ease }
+
