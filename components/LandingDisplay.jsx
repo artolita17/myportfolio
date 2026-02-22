@@ -23,7 +23,7 @@ export default function LandingDisplay() {
       <div className="relative w-full h-full flex items-center justify-center p-4 md:p-8 lg:p-12">
         <img
           ref={imageRef}
-          src="/images/LANDING PAGE.jpg"
+          src="/images/LANDINGPAGE.jpg"
           alt="Landing Page Display"
           className="max-w-full max-h-full w-auto h-auto object-contain"
           style={{
