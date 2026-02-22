@@ -2,6 +2,7 @@ import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
+import LandingDisplay from '../components/LandingDisplay'
 import About from '../components/About'
 import Work from '../components/Work'
 import Development from '../components/Development'
@@ -20,7 +21,8 @@ export default function Home() {
 
       <Navbar />
       <main>
-        <Hero />
+  
+        <LandingDisplay />
         <About />
         <Work />
         <Development />
