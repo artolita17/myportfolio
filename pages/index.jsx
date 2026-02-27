@@ -9,7 +9,9 @@ import Development from '../components/Development'
 import Security from '../components/Security'
 import Startup from '../components/Startup'
 import Projects from '../components/Projects'
+import VisitorCounter from '../components/VisitorCounter'
 import Contact from '../components/Contact'
+import BackToTop from '../components/BackToTop'
 
 export default function Home() {
   return (
@@ -28,8 +30,10 @@ export default function Home() {
         <Development />
         <Security />
         <Startup />
+        <VisitorCounter />
         <Contact />
       </main>
+      <BackToTop />
     </div>
   )
 }
