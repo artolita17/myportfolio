@@ -49,7 +49,8 @@ const sample = [
 export default function Work() {
   const [filter, setFilter] = useState('All')
   const [selectedItem, setSelectedItem] = useState(null)
-  const [visibleItems, setVisibleItems] = useState(6) // Show only 6 items initially
+  const [showAllModal, setShowAllModal] = useState(false)
+  const [visibleItems, setVisibleItems] = useState(4) // Show only 4 items initially
   const [loadedImages, setLoadedImages] = useState(new Set())
   
   const categories = useMemo(() => ['All', ...new Set(sample.map((s) => s.cat))], [])
@@ -65,29 +66,11 @@ export default function Work() {
   }, [])
 
   const btnsRef = useRef()
-  const observerRef = useRef()
 
   useEffect(() => {
     if (!btnsRef.current) return
     gsap.from(btnsRef.current.children, { y: 8, opacity: 0, stagger: 0.06, duration: 0.6, ease: 'power2.out' })
   }, [])
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && visibleItems < visible.length) {
-          loadMoreItems()
-        }
-      },
-      { threshold: 0.1 }
-    )
-
-    if (observerRef.current) {
-      observer.observe(observerRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [visibleItems, visible.length, loadMoreItems])
 
   return (
     <section id="work" className="py-24 px-6 max-w-6xl mx-auto">
@@ -106,7 +89,7 @@ export default function Work() {
         ))}
       </div>
 
-      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <AnimatePresence mode="popLayout">
           {displayItems.map((s) => (
             <motion.div
@@ -147,13 +130,15 @@ export default function Work() {
 
       {/* Load more trigger */}
       {displayItems.length < visible.length && (
-        <div ref={observerRef} className="mt-8 flex justify-center">
-          <button
-            onClick={loadMoreItems}
-            className="bg-white/6 border border-white/5 px-6 py-2 rounded-md hover:bg-white/10 transition"
+        <div className="mt-12 flex justify-center">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowAllModal(true)}
+            className="bg-gradient-to-r from-green-400/20 to-blue-500/20 border border-green-400/30 px-8 py-3 rounded-lg hover:from-green-400/30 hover:to-blue-500/30 hover:border-green-400/50 transition-all duration-300 font-medium text-green-400 backdrop-blur-sm"
           >
-            Load More ({visible.length - displayItems.length} remaining)
-          </button>
+            Show All ({visible.length - displayItems.length} more)
+          </motion.button>
         </div>
       )}
 
@@ -189,6 +174,74 @@ export default function Work() {
                 <div className="p-6">
                   <h3 className="text-xl font-bold">{selectedItem.title}</h3>
                   <p className="text-white/70 mt-2">{selectedItem.cat}</p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal for showing all items */}
+      <AnimatePresence>
+        {showAllModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowAllModal(false)}
+            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 cursor-pointer"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-panel rounded-xl max-w-7xl max-h-[90vh] overflow-hidden border border-white/10 w-full"
+            >
+              <div className="p-6 border-b border-white/10">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">All Creative Work</h2>
+                  <button
+                    onClick={() => setShowAllModal(false)}
+                    className="bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-black/80 transition-colors"
+                  >
+                    ×
+                  </button>
+                </div>
+                <p className="text-white/70 mt-2">Browse through all {visible.length} projects</p>
+              </div>
+              
+              <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {visible.map((s) => (
+                    <motion.div
+                      key={s.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      whileHover={{ scale: 1.03 }}
+                      onClick={() => {
+                        setSelectedItem(s)
+                        setShowAllModal(false)
+                      }}
+                      className="relative overflow-hidden rounded-lg bg-panel/50 border border-white/5 p-3 cursor-pointer"
+                    >
+                      <div className="h-32 bg-gradient-to-br from-white/3 to-white/6 rounded-md flex items-center justify-center text-white/70 relative overflow-hidden">
+                        <img
+                          src={s.image}
+                          alt={s.title}
+                          loading="lazy"
+                          className="absolute inset-0 w-full h-full object-cover rounded-md"
+                        />
+                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition">
+                          <div className="bg-black/60 px-2 py-1 rounded text-sm">View</div>
+                        </div>
+                      </div>
+                      <div className="mt-2">
+                        <div className="font-semibold text-sm truncate">{s.title}</div>
+                        <div className="text-xs text-white/60">{s.cat}</div>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </motion.div>
